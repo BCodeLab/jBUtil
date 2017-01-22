@@ -42,7 +42,7 @@
     };
 
     _jB.prototype.param = function (source) {
-        if (jQuery) {
+        if (typeof jQuery !== 'undefined') {
             return jQuery.param.apply(this, arguments);
         }
 
@@ -56,7 +56,7 @@
     };
 
     _jB.prototype.extend = function () {
-        if (jQuery) {
+        if (typeof jQuery !== 'undefined') {
             return jQuery.extend.apply(this, arguments);
         }
 
