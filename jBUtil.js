@@ -2,7 +2,7 @@
  jBUtil v0.0.1
  Copyright 2016 Alberto Bettin
  Released under the MIT license
-*/
+ */
 
 
 (function () {
@@ -57,10 +57,9 @@
 
     _jB.prototype.extend = function () {
         if (typeof jQuery !== 'undefined') {
-            return jQuery.extend.apply(this, arguments);
+            // return jQuery.extend.apply(this, arguments);
         }
-
-        var src, copyIsArray, copy, name, options, clone, target = arguments[0] || {},
+        var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
                 i = 1,
                 length = arguments.length,
                 deep = false;
@@ -69,25 +68,27 @@
         if (typeof target === "boolean") {
             deep = target;
 
-            // skip the boolean and the target
+            // Skip the boolean and the target
             target = arguments[i] || {};
             i++;
         }
 
         // Handle case when target is a string or something (possible in deep copy)
-        if (typeof target !== "object") {
+        if (typeof target !== "object" && typeof target !== "function") {
             target = {};
         }
 
-        // extend jQuery itself if only one argument is passed
+        // Extend jQuery itself if only one argument is passed
         if (i === length) {
             target = this;
             i--;
         }
 
         for (; i < length; i++) {
+
             // Only deal with non-null/undefined values
             if ((options = arguments[i]) != null) {
+
                 // Extend the base object
                 for (name in options) {
                     src = target[name];
@@ -99,13 +100,14 @@
                     }
 
                     // Recurse if we're merging plain objects or arrays
-                    if (deep && copy && (typeof copy === "object" || (copyIsArray = (typeof copy === "array")))) {
+                    if (deep && copy && ((copyIsArray = Array.isArray(copy)) || typeof copy === 'object' )) {
+
                         if (copyIsArray) {
                             copyIsArray = false;
-                            clone = src && typeof src === "array" ? src : [];
+                            clone = src && Array.isArray(src) ? src : [];
 
                         } else {
-                            clone = src && typeof src === "object" ? src : {};
+                            clone = src && typeof src === 'object' ? src : {};
                         }
 
                         // Never move original objects, clone them
@@ -160,8 +162,7 @@
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.send(jB.param(params.data));
-        }
-        else {
+        } else {
             xhr.open('GET', realCallPath + params.call, true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.send();
@@ -194,8 +195,7 @@
                 //try to parse JSON response
                 try {
                     response.response = JSON.parse(xhr.responseText);
-                }
-                catch (e) {
+                } catch (e) {
                     response.status = 406;
                     if (!params.silent_mode) {
                         console.log('Core_util.fetch ' + response.status + ' (Not Acceptable) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
@@ -337,7 +337,7 @@
         }
         return homePath;
     };
-    
+
     _jB.prototype.fDate = function (format, date) {
         if (date === undefined) {
             date = new Date();
@@ -350,8 +350,7 @@
 
         return formatted_date;
     },
-
-    window.jB = new _jB();
+            window.jB = new _jB();
 
 
 })();
