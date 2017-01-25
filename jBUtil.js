@@ -21,6 +21,7 @@
 
     _jB.prototype.config = {
         segmentBaseRoot: "",
+        segmentIgnoreBaseRoot: "",
         segmentSiteRoot: "",
         sessionExpiredUrl: "",
         silentMode: false
@@ -57,7 +58,7 @@
 
     _jB.prototype.extend = function () {
         if (typeof jQuery !== 'undefined') {
-            // return jQuery.extend.apply(this, arguments);
+             return jQuery.extend.apply(this, arguments);
         }
         var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
                 i = 1,
@@ -315,7 +316,10 @@
     };
 
     _jB.prototype.baseUrl = function (url) {
-        var baseRegex = new RegExp("(.*\/+" + this.config.segmentBaseRoot + ")\/+");
+        var configBaseUrl = this.config.segmentBaseRoot ? this.config.segmentBaseRoot.replace('/', '\\\/') : '';
+        var configBaseEscapeUrl = this.config.segmentIgnoreBaseRoot ? this.config.segmentIgnoreBaseRoot.replace('/', '\\\/') : '';
+        
+        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl +"\/+": '')  + ")\/+" + (configBaseEscapeUrl ? configBaseEscapeUrl + "\/+" : ''));
         var homePath = window.location.href.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("Empty Base Url, please check 'config.segmentUrlRoot'");
@@ -327,10 +331,11 @@
     };
 
     _jB.prototype.siteUrl = function (url) {
-        var baseRegex = new RegExp("(.*\/+" + this.config.segmentSiteRoot + ")\/+");
+        var configSiteUrl = this.config.segmentSiteRoot ? this.config.segmentSiteRoot.replace('/', '\/') : '';
+        var baseRegex = new RegExp("(.*\/+" + configSiteUrl + ")\/+");
         var homePath = window.location.href.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
-            console.warn("Empty Base Url, please check 'config.segmentUrlRoot'");
+            console.warn("Empty Site Url, please check 'config.segmentUrlRoot'");
         }
         if (url !== undefined) {
             homePath += (url.indexOf('/') !== 0 ? '/' : '') + url;
