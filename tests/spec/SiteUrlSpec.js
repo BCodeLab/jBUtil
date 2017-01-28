@@ -20,7 +20,6 @@ describe("jB.siteUrl", function () {
 
     it("should be able to return right site url according to  parameter", function () {
         jB.config.segmentSiteRoot = 'tests/SpecRunner.html';
-        console.log(match);
         expect(jB.siteUrl('fooPage')).toEqual(match[1] + '/SpecRunner.html' + '/fooPage');
 
     });

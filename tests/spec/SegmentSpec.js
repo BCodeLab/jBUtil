@@ -33,6 +33,7 @@ describe("jB.segment", function () {
             // store segments
             manualUrl.push(cSegment);
         }
+        
 
         expect(manualUrl.join('/')).toEqual(windowsSegments);
     });
