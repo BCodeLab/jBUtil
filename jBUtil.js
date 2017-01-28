@@ -58,7 +58,7 @@
 
     _jB.prototype.extend = function () {
         if (typeof jQuery !== 'undefined') {
-             return jQuery.extend.apply(this, arguments);
+            return jQuery.extend.apply(this, arguments);
         }
         var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {},
                 i = 1,
@@ -101,7 +101,7 @@
                     }
 
                     // Recurse if we're merging plain objects or arrays
-                    if (deep && copy && ((copyIsArray = Array.isArray(copy)) || typeof copy === 'object' )) {
+                    if (deep && copy && ((copyIsArray = Array.isArray(copy)) || typeof copy === 'object')) {
 
                         if (copyIsArray) {
                             copyIsArray = false;
@@ -287,19 +287,18 @@
             return null;
         }
 
-        var currentUrl = window.location.href;
         //rempve character # at the end of the url
-        if (currentUrl.match(/^[\w\:\/\.]+$/) === null) {
+        var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
+        if (sanitizedUrlMatch.warn) {
             if (!this.config.silentMode) {
                 console.warn("Current Url contains strange symbol");
             }
-            currentUrl = currentUrl.match(/^([\w\:\/\.]+)/)[1];
         }
 
 
 
         var sCount = 0;
-        var segments = currentUrl.replace(this.baseUrl(), "").split('/');
+        var segments = sanitizedUrlMatch.sanitized.replace(this.baseUrl(), "").split('/');
         for (var i = 0; i < segments.length; i++) {
             if (segments[i].length <= 0) {
                 continue;
@@ -316,11 +315,18 @@
     };
 
     _jB.prototype.baseUrl = function (url) {
-        var configBaseUrl = this.config.segmentBaseRoot ? this.config.segmentBaseRoot.replace('/', '\\\/') : '';
-        var configBaseEscapeUrl = this.config.segmentIgnoreBaseRoot ? this.config.segmentIgnoreBaseRoot.replace('/', '\\\/') : '';
-        
-        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl +"\/+": '')  + ")\/+" + (configBaseEscapeUrl ? configBaseEscapeUrl + "\/+" : ''));
-        var homePath = window.location.href.match(baseRegex)[1];
+        var configBaseUrl = this.config.segmentBaseRoot ? _escapeSpecialCharRegex(this.config.segmentBaseRoot) : '';
+        var configBaseEscapeUrl = this.config.segmentIgnoreBaseRoot ? _escapeSpecialCharRegex(this.config.segmentIgnoreBaseRoot) : '';
+
+        var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
+        if (sanitizedUrlMatch.warn) {
+            if (!this.config.silentMode) {
+                console.warn("Current Url contains strange symbol");
+            }
+        }
+
+        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl + "\/+" : '') + ")\/+" + (configBaseEscapeUrl ? configBaseEscapeUrl + "\/+" : ''));
+        var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("Empty Base Url, please check 'config.segmentUrlRoot'");
         }
@@ -331,9 +337,17 @@
     };
 
     _jB.prototype.siteUrl = function (url) {
-        var configSiteUrl = this.config.segmentSiteRoot ? this.config.segmentSiteRoot.replace('/', '\/') : '';
-        var baseRegex = new RegExp("(.*\/+" + configSiteUrl + ")\/+");
-        var homePath = window.location.href.match(baseRegex)[1];
+        var configSiteUrl = this.config.segmentSiteRoot ? _escapeSpecialCharRegex(this.config.segmentSiteRoot) : '';
+        //remove character # at the end of the url
+        var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
+        if (sanitizedUrlMatch.warn) {
+            if (!this.config.silentMode) {
+                console.warn("Current Url contains strange symbol");
+            }
+        }
+
+        var baseRegex = new RegExp("(.*\/+" + configSiteUrl + ")");
+        var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("Empty Site Url, please check 'config.segmentUrlRoot'");
         }
@@ -354,8 +368,28 @@
         formatted_date = formatted_date.replace('Y', year);
 
         return formatted_date;
-    },
-            window.jB = new _jB();
+    };
+    
+    
+    
+    
+    var _escapeSpecialCharRegex = function (value) {
+        return value.replace('/', '\\\/')
+                .replace('.', '\\\.');
+    };
+    
+    var _sanitizeUrl = function (url) {
+        var sanitizedMatch = url.match(/^(.*[a-zA-Z0-9])([\/\#\?]*)$/);
+                
+        return {
+            sanitized : sanitizedMatch[1],
+            warn : sanitizedMatch[2].length
+        }
+    };
+    
+    
+    
+    window.jB = new _jB();
 
 
 })();
