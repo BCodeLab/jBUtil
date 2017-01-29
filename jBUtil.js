@@ -7,11 +7,13 @@
 
 (function () {
 
+    // avoid moltiple jB initialization
     if (window.jB !== undefined) {
         console.warn("jB has been already defined!");
         return;
     }
 
+    // base jB, nothing more than a function and its prototype
     var _jB = function () {
         return this;
     };
@@ -19,6 +21,9 @@
     _jB.prototype = {};
 
 
+    //**************************************************************************
+    // jB base config
+    
     _jB.prototype.config = {
         segmentBaseRoot: "",
         segmentIgnoreBaseRoot: "",
@@ -26,7 +31,15 @@
         sessionExpiredUrl: "",
         silentMode: false
     };
+    
+    //**************************************************************************
+    // jB functions
 
+    /**
+     * Count entities attributes
+     * @param {array, object, string, whatever} el the entity to count
+     * @returns {Number} the count number
+     */
     _jB.prototype.count = function (el) {
         switch (typeof el) {
             case "object":
@@ -42,6 +55,12 @@
         }
     };
 
+    /**
+     * Convert string get from an object
+     * 
+     * @param {type} source the object containing params
+     * @returns {String} "get" string
+     */
     _jB.prototype.param = function (source) {
         if (typeof jQuery !== 'undefined') {
             return jQuery.param.apply(this, arguments);
@@ -56,6 +75,14 @@
         return array.join("&");
     };
 
+    /**
+     * Extend two or more objects
+     * 
+     * if first param is true - deep mode is enebled
+     * 
+     * 
+     * @returns {jBUtilL#8._jB}
+     */
     _jB.prototype.extend = function () {
         if (typeof jQuery !== 'undefined') {
             return jQuery.extend.apply(this, arguments);
@@ -126,6 +153,13 @@
         return target;
     };
 
+    /**
+     * Improved xhr call function, reduce some annoying configs and code required by
+     * the original version
+     * 
+     * @param {object} para
+     * @returns {undefined} -
+     */
     _jB.prototype.fetch = function (para) {
         var default_params = {
             timeout: false,
@@ -185,8 +219,8 @@
                     response.status = 406;
                     response.msg = "The session has been expired, please reload the page.";
                     if (!params.silent_mode) {
-                        //bootbox.alert('The session has been expired, please reload the page.');
-                        //alert('The session has been expired, please reload the page.');
+                        // session lost, need to login again
+                        alert('The session has been expired, please reload the page.');
                         console.log('Core_util.fetch ' + response.status + ' (Redirect) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                     }
                     params.callback(response);
@@ -222,6 +256,12 @@
         });
     };
 
+    /**
+     * Busy waiting implementation 
+     * 
+     * @param {object} para
+     * @returns {undefined}
+     */
     _jB.prototype.wait = function (para) {
         var default_params = {
             sync_name: '',
@@ -279,6 +319,12 @@
         };
     };
 
+    /**
+     * Return the segment at required index (based on current url)
+     * 
+     * @param {type} index
+     * @returns {jBUtilL#8._jB.prototype.segment.segments}
+     */
     _jB.prototype.segment = function (index) {
         if (index <= 0) {
             if (!this.config.silentMode) {
@@ -287,15 +333,13 @@
             return null;
         }
 
-        //rempve character # at the end of the url
+        //remove character # at the end of the url
         var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
         if (sanitizedUrlMatch.warn) {
             if (!this.config.silentMode) {
                 console.warn("Current Url contains strange symbol");
             }
         }
-
-
 
         var sCount = 0;
         var segments = sanitizedUrlMatch.sanitized.replace(this.baseUrl(), "").split('/');
@@ -314,6 +358,12 @@
         return null;
     };
 
+    /**
+     * Return the base url, use  if you what to create resource url
+     * 
+     * @param {string} url - optional - the string you what to add at the end of base url
+     * @returns {string}
+     */
     _jB.prototype.baseUrl = function (url) {
         var configBaseUrl = this.config.segmentBaseRoot ? _escapeSpecialCharRegex(this.config.segmentBaseRoot) : '';
         var configBaseEscapeUrl = this.config.segmentIgnoreBaseRoot ? _escapeSpecialCharRegex(this.config.segmentIgnoreBaseRoot) : '';
@@ -325,7 +375,8 @@
             }
         }
 
-        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl + "\/+" : '') + ")\/+" + (configBaseEscapeUrl ? configBaseEscapeUrl + "\/+" : ''));
+        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl : '') + ")" + (configBaseEscapeUrl ? '\/+' + configBaseEscapeUrl  : ''));
+
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("Empty Base Url, please check 'config.segmentUrlRoot'");
@@ -336,6 +387,12 @@
         return homePath;
     };
 
+    /**
+     * Return the site url, use if you what to create resource url
+     * 
+     * @param {string} url - optional - the string you what to add at the end of site url
+     * @returns {string}
+     */
     _jB.prototype.siteUrl = function (url) {
         var configSiteUrl = this.config.segmentSiteRoot ? _escapeSpecialCharRegex(this.config.segmentSiteRoot) : '';
         //remove character # at the end of the url
@@ -357,6 +414,16 @@
         return homePath;
     };
 
+    /**
+     * Return the formatted date, according to the given date and format
+     * 
+     * @param {type} format - the format to use
+     *  d - day number in 2 digits
+     *  m - month number in 2 digits
+     *  Y - year number in 4 digits
+     * @param {type} date
+     * @returns {unresolved}
+     */
     _jB.prototype.fDate = function (format, date) {
         if (date === undefined) {
             date = new Date();
@@ -370,25 +437,39 @@
         return formatted_date;
     };
     
+    //**************************************************************************
+    // private methods - centralized functions
     
-    
-    
+   
+    /**
+     * Create a string with escaped special char, ready to be used as regex component
+     * @param {string} value
+     * @returns {string}
+     */
     var _escapeSpecialCharRegex = function (value) {
         return value.replace('/', '\\\/')
                 .replace('.', '\\\.');
     };
     
+    /**
+     * Sanitize url, return url whithout any "undesired" stuff (particular chars ..)
+     * 
+     * @param {strinf} url the url to sanitize
+     * @returns {object} the response canatinig the following keys
+     *  - sanitized - what you're looking for, the sanitized url
+     *  - warning - true if the sanitize function found some "undesired" stuff
+     */
     var _sanitizeUrl = function (url) {
         var sanitizedMatch = url.match(/^(.*[a-zA-Z0-9])([\/\#\?]*)$/);
                 
         return {
             sanitized : sanitizedMatch[1],
             warn : sanitizedMatch[2].length
-        }
+        };
     };
     
-    
-    
+    //**************************************************************************
+    // ready to expose jB to the world  
     window.jB = new _jB();
 
 
