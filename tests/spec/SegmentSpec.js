@@ -1,14 +1,18 @@
 describe("jB.segment", function () {
 
-    jB.config = {
-        segmentSiteRoot: 'tests',
-        segmentIgnoreBaseRoot: 'tests'
-    };
+
+
+    beforeEach(function () {
+        jB.config = {
+            segmentSiteRoot: 'tests',
+            segmentIgnoreBaseRoot: 'tests'
+        };
+    });
 
     it("should be return null when index is out of the range", function () {
         // retrieve  the string of segments manually
 
-        var windowsSegments = window.location.href.replace(jB.baseUrl() + '/', "");
+        var windowsSegments = window.location.href.replace(jB.baseUrl()+'/', "");
 
         // the number of segment is equal to the number of spltted chunks 
         var segmentCount = (windowsSegments.split("/").length);
@@ -33,7 +37,7 @@ describe("jB.segment", function () {
             // store segments
             manualUrl.push(cSegment);
         }
-        
+
 
         expect(manualUrl.join('/')).toEqual(windowsSegments);
     });
