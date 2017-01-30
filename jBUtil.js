@@ -23,7 +23,7 @@
 
     //**************************************************************************
     // jB base config
-    
+
     _jB.prototype.config = {
         segmentBaseRoot: "",
         segmentIgnoreBaseRoot: "",
@@ -31,7 +31,7 @@
         sessionExpiredUrl: "",
         silentMode: false
     };
-    
+
     //**************************************************************************
     // jB functions
 
@@ -375,7 +375,7 @@
             }
         }
 
-        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl : '') + ")" + (configBaseEscapeUrl ? '\/+' + configBaseEscapeUrl  : ''));
+        var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl : '') + ")" + (configBaseEscapeUrl ? '\/+' + configBaseEscapeUrl : ''));
 
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
@@ -414,29 +414,6 @@
         return homePath;
     };
 
-    /**
-     * Return the formatted date, according to the given date and format
-     * 
-     * @param {type} format - the format to use
-     *  d - day number in 2 digits
-     *  m - month number in 2 digits
-     *  Y - year number in 4 digits
-     * @param {type} date
-     * @returns {unresolved}
-     */
-    _jB.prototype.fDate = function (format, date) {
-        if (date === undefined) {
-            date = new Date();
-        }
-        var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
-
-        var formatted_date = format.replace('d', day > 9 ? day : ('0' + day));
-        formatted_date = formatted_date.replace('m', month > 9 ? month : ('0' + month));
-        formatted_date = formatted_date.replace('Y', year);
-
-        return formatted_date;
-    };
-    
     /**
      * Return the human readable name of the browser 
      * @returns {String} the browser
@@ -494,7 +471,7 @@
             return 'Opera';
         }
     };
-    
+
     /**
      * Check if we're running on a mobile device of not
      * @returns {Boolean}
@@ -502,7 +479,7 @@
     _jB.isMobile = function () {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Windows Phone|Opera Mini/i.test(navigator.userAgent);
     };
-    
+
     /**
      * Round number to specified precision
      * @param {number} number the number to round
@@ -515,7 +492,7 @@
         }
         return Math.round(number * Math.pow(10, precision)) / Math.pow(10, precision);
     };
-    
+
     /**
      * Check if a value is a number or not
      * 
@@ -525,14 +502,73 @@
     _jB.isNumeric = function (number) {
         return !isNaN(parseFloat(number)) && isFinite(number);
     };
-    
-    
-    
-    
+
+    /**
+     * Parse a string that contains a well formatted date, null if the string wasn't recognized
+     * @param {string} string the date to parser
+     * @returns {Date} the parsed date
+     */
+    _jB.parseDate = function (string) {
+        // date dd/mm/yyyy hh:ii:ss
+        var date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/);
+        if (date_regex !== null && date_regex.length >= 7) {
+            return new Date(date_regex[3], parseInt(date_regex[2]) - 1, date_regex[1], date_regex[4], date_regex[5], date_regex[6]);
+        }
+        //  date dd/mm/yyyy
+        var date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{4})/);
+        if (date_regex !== null && date_regex.length >= 4) {
+            return new Date(date_regex[3], parseInt(date_regex[2]) - 1, date_regex[1], 12, 0, 0);
+        }
+        // date mm/yyyy
+        date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{4})/);
+        if (date_regex !== null && date_regex.length >= 3) {
+            return new Date(date_regex[2], date_regex[1] - 1, 01, 12, 0, 0);
+        }
+        // date yyyy-mm-dd
+        date_regex = string.match(/([0-9]{4})[\-]([0-9]{4})[\-]([0-9]{4})/);
+        if (date_regex !== null && date_regex.length >= 3) {
+            return new Date(date_regex[1], date_regex[2] - 1, date_regex[3], 12, 0, 0);
+        }
+        return new Date(Date.parse(string));
+    };
+
+    /**
+     * 
+     * 
+     * @param {type} format the format to use for the date
+     * - dd day 2 digits
+     * - mm month 2 digits
+     * - YYYY year 4 digits
+     * - HH hour 2 digits
+     * - ii minutes 2 digits
+     * - ss seconds 2 digits
+     * @param {Date} date the Date object to use, if undefined the current date will be used
+     * @returns {String} the formatted date
+     */
+    _jB.formatDate = function (format, date) {
+        if (date === undefined) {
+            date = new Date();
+        }
+        var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
+        var hour = date.getHours(), minutes = date.getMinutes() + 1, seconds = date.getSeconds();
+
+        var formatted_date = format.replace('dd', day > 9 ? day : ('0' + day))
+                .replace('mm', month > 9 ? month : ('0' + month))
+                .replace('YYYY', year)
+                .replace('HH', hour)
+                .replace('ii', minutes)
+                .replace('ss', seconds);
+
+        return formatted_date;
+    };
+
+
+
+
     //**************************************************************************
     // private methods - centralized functions
-    
-   
+
+
     /**
      * Create a string with escaped special char, ready to be used as regex component
      * @param {string} value
@@ -542,7 +578,7 @@
         return value.replace('/', '\\\/')
                 .replace('.', '\\\.');
     };
-    
+
     /**
      * Sanitize url, return url whithout any "undesired" stuff (particular chars ..)
      * 
@@ -553,13 +589,13 @@
      */
     var _sanitizeUrl = function (url) {
         var sanitizedMatch = url.match(/^(.*[a-zA-Z0-9])([\/\#\?]*)$/);
-                
+
         return {
-            sanitized : sanitizedMatch[1],
-            warn : sanitizedMatch[2].length
+            sanitized: sanitizedMatch[1],
+            warn: sanitizedMatch[2].length
         };
     };
-    
+
     //**************************************************************************
     // ready to expose jB to the world  
     window.jB = new _jB();
