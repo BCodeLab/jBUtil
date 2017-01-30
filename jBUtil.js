@@ -476,7 +476,7 @@
      * Check if we're running on a mobile device of not
      * @returns {Boolean}
      */
-    _jB.isMobile = function () {
+    _jB.prototype.isMobile = function () {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Windows Phone|Opera Mini/i.test(navigator.userAgent);
     };
 
@@ -486,7 +486,7 @@
      * @param {number} precision the number of decimals we want to use
      * @returns {number} the rounded number
      */
-    _jB.round = function (number, precision) {
+    _jB.prototype.round = function (number, precision) {
         if (precision === undefined) {
             precision = 2;
         }
@@ -499,7 +499,7 @@
      * @param {type} number the number, we hope
      * @returns {Boolean} true if it is a number, false otherwise
      */
-    _jB.isNumeric = function (number) {
+    _jB.prototype.isNumeric = function (number) {
         return !isNaN(parseFloat(number)) && isFinite(number);
     };
 
@@ -508,7 +508,7 @@
      * @param {string} string the date to parser
      * @returns {Date} the parsed date
      */
-    _jB.parseDate = function (string) {
+    _jB.prototype.parseDate = function (string) {
         // date dd/mm/yyyy hh:ii:ss
         var date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/);
         if (date_regex !== null && date_regex.length >= 7) {
@@ -545,7 +545,7 @@
      * @param {Date} date the Date object to use, if undefined the current date will be used
      * @returns {String} the formatted date
      */
-    _jB.formatDate = function (format, date) {
+    _jB.prototype.formatDate = function (format, date) {
         if (date === undefined) {
             date = new Date();
         }
