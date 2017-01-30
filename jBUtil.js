@@ -437,6 +437,67 @@
         return formatted_date;
     };
     
+    /**
+     * Return the human readable name of the browser 
+     * @returns {String} the browser
+     * Should be:
+     *  - Chrome
+     *  - Firefox
+     *  - Safari
+     *  - IE <version>
+     */
+    _jB.prototype.browserName = function () {
+        var is_chrome = navigator.userAgent.indexOf('Chrome') > -1;
+        var is_firefox = navigator.userAgent.indexOf('Firefox') > -1;
+        var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+        var is_opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+        if ((is_chrome) && (is_safari)) {
+            is_safari = false;
+        }
+        if ((is_chrome) && (is_opera)) {
+            is_chrome = false;
+        }
+
+        if (is_chrome) {
+            return 'Chrome';
+        }
+        if (is_firefox) {
+            return 'Firefox';
+        }
+
+        if (is_safari) {
+            return 'Safari';
+        }
+
+        var ua = window.navigator.userAgent;
+
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+            // IE 10 or older => return version number
+            return 'IE ' + parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+            // IE 11 => return version number
+            var rv = ua.indexOf('rv:');
+            return 'IE ' + parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+            // Edge (IE 12+) => return version number
+            return 'IE ' + parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
+
+        if (is_opera) {
+            return 'Opera';
+        }
+    };
+    
+    
+    
+    
     //**************************************************************************
     // private methods - centralized functions
     
