@@ -516,6 +516,16 @@
         return Math.round(number * Math.pow(10, precision)) / Math.pow(10, precision);
     };
     
+    /**
+     * Check if a value is a number or not
+     * 
+     * @param {type} number the number, we hope
+     * @returns {Boolean} true if it is a number, false otherwise
+     */
+    _jB.isNumeric = function (number) {
+        return !isNaN(parseFloat(number)) && isFinite(number);
+    };
+    
     
     
     
