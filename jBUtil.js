@@ -495,6 +495,14 @@
         }
     };
     
+    /**
+     * Check if we're running on a mobile device of not
+     * @returns {Boolean}
+     */
+    _jB.isMobile = function () {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Windows Phone|Opera Mini/i.test(navigator.userAgent);
+    }
+    
     
     
     
