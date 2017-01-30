@@ -501,7 +501,20 @@
      */
     _jB.isMobile = function () {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Windows Phone|Opera Mini/i.test(navigator.userAgent);
-    }
+    };
+    
+    /**
+     * Round number to specified precision
+     * @param {number} number the number to round
+     * @param {number} precision the number of decimals we want to use
+     * @returns {number} the rounded number
+     */
+    _jB.round = function (number, precision) {
+        if (precision === undefined) {
+            precision = 2;
+        }
+        return Math.round(number * Math.pow(10, precision)) / Math.pow(10, precision);
+    };
     
     
     
