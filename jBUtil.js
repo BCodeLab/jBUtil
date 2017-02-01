@@ -188,17 +188,15 @@
             return;
         }
 
-        var realCallPath = jB.siteUrl() + (params.call.indexOf('/') > -1 ? '' : ("/" + jB.segment(2))) + "/";
-
         var xhr = new XMLHttpRequest();
         if (jB.count(params.data) > 0) {
             // set post request with data
-            xhr.open('POST', realCallPath + params.call, true);
+            xhr.open('POST', jB.siteUrl(params.call) + params.call, true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.send(jB.param(params.data));
         } else {
-            xhr.open('GET', realCallPath + params.call, true);
+            xhr.open('GET', jB.siteUrl(params.call) + params.call, true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.send();
         }
