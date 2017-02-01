@@ -26,16 +26,32 @@ describe("jB.segment", function () {
         expect(segmentCount).toEqual(maxIndex - 1);
     });
 
-    it("should be able to retrieve right data", function () {
+    it("should be able to retrieve right data - positive index", function () {
         // retrieve  the string of segments manually
         var windowsSegments = window.location.href.replace(jB.baseUrl() + '/', "").replace('?', "");
 
 
         var cSegment, manualUrl = [];
-        var maxIndex = 0;
-        while ((cSegment = jB.segment(++maxIndex)) !== null) {
+        var maxIndex = 1;
+        while ((cSegment = jB.segment(maxIndex++)) !== null) {
             // store segments
             manualUrl.push(cSegment);
+        }
+
+
+        expect(manualUrl.join('/')).toEqual(windowsSegments);
+    });
+    
+    it("should be able to retrieve right data - negative index", function () {
+        // retrieve  the string of segments manually
+        var windowsSegments = window.location.href.replace(jB.baseUrl() + '/', "").replace('?', "");
+        
+        var cSegment, manualUrl = [];
+        var maxIndex = 1;
+        while ((cSegment = jB.segment(maxIndex++ * -1)) !== null) {
+            console.log(maxIndex);
+            // store segments
+            manualUrl.unshift(cSegment);
         }
 
 

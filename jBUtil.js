@@ -324,13 +324,6 @@
      * @returns {jBUtilL#8._jB.prototype.segment.segments}
      */
     _jB.prototype.segment = function (index) {
-        if (index <= 0) {
-            if (!this.config.silentMode) {
-                console.warn("Invalid index");
-            }
-            return null;
-        }
-
         //remove character # at the end of the url
         var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
         if (sanitizedUrlMatch.warn) {
@@ -338,14 +331,18 @@
                 console.warn("Current Url contains strange symbol");
             }
         }
+        
+        console.log(index);
 
         var sCount = 0;
         var segments = sanitizedUrlMatch.sanitized.replace(this.baseUrl(), "").split('/');
-        for (var i = 0; i < segments.length; i++) {
+        console.log(segments);
+        
+        for (var i = index >= 0 ? 0 : (segments.length - 1); (index < 0 || i < segments.length) && (index >= 0 || i >= 0); index >= 0 ? i++ : i-- ) {
             if (segments[i].length <= 0) {
                 continue;
             }
-            if (sCount >= index - 1) {
+            if((index >= 0 && sCount >= index - 1) || (index < 0 && sCount >= (-1 * index) - 1)){
                 return segments[i];
             }
             sCount++;
