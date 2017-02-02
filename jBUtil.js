@@ -497,6 +497,42 @@
     _jB.prototype.isNumeric = function (number) {
         return !isNaN(parseFloat(number)) && isFinite(number);
     };
+    
+    /**
+     * Extract a number from a mixed data
+     * 
+     * @param {type} i the variable to use
+     * @returns {mixed} the number, null if no number can be returned
+     */
+    _jB.prototype.parseNum = function (i) {
+        if (typeof i === 'string') {
+            // remove ' , uses as separator
+            i = i.replace(/\'/g, '');
+
+            //replace , whit .
+            var n = i.replace(/\,/g, '.');
+            //search first number
+            var n_c = n.match(/[-]?[0-9\.]+/);
+            if (n_c === null) {
+                return false;
+            }
+            //search for int number
+            if (n_c[0].match(/\.([0-9]+$)/) === null) {
+                return parseInt(n_c[0].replace(/\./g, ''));
+            }
+            //search for decimal number
+            var regex = /([-]?[0-9.]*)\.([0-9]+)$/;
+            var match = regex.exec(n_c[0]);
+            return parseFloat((match[1].replace(/\./g, '') + '.' + match[2]));
+        } else if (typeof i === 'number') {
+            //nothig to do
+            return i;
+        } else {
+            // doesn't know what to do
+
+            return false;
+        }
+    };
 
     /**
      * Parse a string that contains a well formatted date, null if the string wasn't recognized
