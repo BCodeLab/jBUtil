@@ -572,17 +572,17 @@
         //  date dd/mm/yyyy
         var date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{4})/);
         if (date_regex !== null && date_regex.length >= 4) {
-            return new Date(date_regex[3], parseInt(date_regex[2]) - 1, date_regex[1], 12, 0, 0);
+            return new Date(date_regex[3], parseInt(date_regex[2]) - 1, date_regex[1]);
         }
         // date mm/yyyy
         date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{4})/);
         if (date_regex !== null && date_regex.length >= 3) {
-            return new Date(date_regex[2], date_regex[1] - 1, 01, 12, 0, 0);
+            return new Date(date_regex[2], date_regex[1] - 1, 1);
         }
         // date yyyy-mm-dd
-        date_regex = string.match(/([0-9]{4})[\-]([0-9]{4})[\-]([0-9]{4})/);
+        date_regex = string.match(/([0-9]{4})[\-]([0-9]{1,2})[\-]([0-9]{1,2})/);
         if (date_regex !== null && date_regex.length >= 3) {
-            return new Date(date_regex[1], date_regex[2] - 1, date_regex[3], 12, 0, 0);
+            return new Date(date_regex[1], date_regex[2] - 1, date_regex[3]);
         }
         return new Date(Date.parse(string));
     };
