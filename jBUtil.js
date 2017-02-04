@@ -331,18 +331,15 @@
                 console.warn("Current Url contains strange symbol");
             }
         }
-        
-        console.log(index);
 
         var sCount = 0;
         var segments = sanitizedUrlMatch.sanitized.replace(this.baseUrl(), "").split('/');
-        console.log(segments);
-        
-        for (var i = index >= 0 ? 0 : (segments.length - 1); (index < 0 || i < segments.length) && (index >= 0 || i >= 0); index >= 0 ? i++ : i-- ) {
+
+        for (var i = index >= 0 ? 0 : (segments.length - 1); (index < 0 || i < segments.length) && (index >= 0 || i >= 0); index >= 0 ? i++ : i--) {
             if (segments[i].length <= 0) {
                 continue;
             }
-            if((index >= 0 && sCount >= index - 1) || (index < 0 && sCount >= (-1 * index) - 1)){
+            if ((index >= 0 && sCount >= index - 1) || (index < 0 && sCount >= (-1 * index) - 1)) {
                 return segments[i];
             }
             sCount++;
@@ -497,7 +494,7 @@
     _jB.prototype.isNumeric = function (number) {
         return !isNaN(parseFloat(number)) && isFinite(number);
     };
-    
+
     /**
      * Extract a number from a mixed data
      * 
@@ -532,6 +529,33 @@
 
             return false;
         }
+    };
+
+
+    /**
+     * Format a number
+     * @param {type} n the number
+     * @param {type} p the decimal to show
+     * @returns {String}
+     */
+    _jB.prototype.formatNum = function (n, p) {
+        if (p === undefined) {
+            p = 2;
+        }
+        var number = this.parseNum(n);
+
+        if (number === false) {
+            return '';
+        }
+
+        number = number.toFixed(2);
+
+        var sign = number < 0 ? "-" : "";
+        var i = Math.abs(parseInt(number)) + "";
+        var decimal = (number - i).toFixed(2);
+        var firstOff = i.length % 3;
+        return  sign + (firstOff ? i.substr(0, firstOff) : "") + (!firstOff || firstOff >= i.length ? '' : '\'') + i.substring(firstOff).replace(/(\d{3})(?=\d{3})/g, "$1\'") + '.' + decimal.substring(decimal.length - 2, decimal.length);
+
     };
 
     /**
@@ -591,6 +615,34 @@
                 .replace('ss', seconds);
 
         return formatted_date;
+    };
+
+    /**
+     * Emulate a form submit, via post
+     * 
+     * @param {object} params
+     * @param {string} url [optional] - the value of action attribute, if not specified current url will be used 
+     * @returns {undefined}
+     */
+    _jB.prototype.formSubmit = function (params, url) {
+        //create aux form
+        var form = document.createElement("form");
+        form.setAttribute("method", 'post');
+        form.setAttribute('action', url !== undefined ? this.siteUrl(url) : window.location.href);
+
+        //insert key=> value elements
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+                form.appendChild(hiddenField);
+            }
+        }
+        //submit form
+        document.getElementsByTagName("body")[0].appendChild(form);
+        form.submit();
     };
 
 
