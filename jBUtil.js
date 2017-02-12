@@ -32,6 +32,43 @@
         silentMode: false
     };
 
+    /**
+     * Set value(s) of config object
+     * 
+     * @param {string} name the config key to edit
+     * @param {type} name the new value to set
+     * or 
+     * @param {type} name the iterable object of key=> value to set
+     * 
+     * @returns {undefined}
+     */
+    _jB.prototype.setConfig = function () {
+        if (typeof arguments[0] === 'string') {
+            if (this.config.hasOwnProperty(arguments[0])) {
+                this.config[arguments[0]] = arguments[1];
+            } else {
+                console.warn('Invalid config key');
+            }
+        } else if (Array.isArray(arguments[0]) || typeof arguments[0] === 'object') {
+            for (var cfg in arguments[0]) {
+                this.setConfig(cfg, arguments[0][cfg]);
+            }
+        }
+    };
+
+    /**
+     * Access to the value of config object
+     * @param {type} cfg the key of the config
+     * @returns {mixed} the value, null is key doesn't exist
+     */
+    _jB.prototype.getConfig = function (cfg) {
+        if (this.config.hasOwnProperty(cfg)) {
+            return this.config[cfg];
+        }
+        console.warn('Invalid config key');
+        return null;
+    };
+
     //**************************************************************************
     // jB functions
 
