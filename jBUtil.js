@@ -9,7 +9,7 @@
 
     // avoid moltiple jB initialization
     if (window.jB !== undefined) {
-        console.warn("jB has been already defined!");
+        console.warn("jB: jB has been already defined!");
         return;
     }
 
@@ -47,7 +47,7 @@
             if (this.config.hasOwnProperty(arguments[0])) {
                 this.config[arguments[0]] = arguments[1];
             } else {
-                console.warn('Invalid config key');
+                console.warn('jB.setConfig: Invalid config key');
             }
         } else if (Array.isArray(arguments[0]) || typeof arguments[0] === 'object') {
             for (var cfg in arguments[0]) {
@@ -65,7 +65,7 @@
         if (this.config.hasOwnProperty(cfg)) {
             return this.config[cfg];
         }
-        console.warn('Invalid config key');
+        console.warn('jB.getConfig: Invalid config key');
         return null;
     };
 
@@ -203,7 +203,7 @@
             data: {},
             callback: function (obj) {
                 if (!jB.config.silentMode) {
-                    console.warn("No fetch-callback defined, server returns: " + obj);
+                    console.warn("jB.fetch: No fetch-callback defined, server returns: " + obj);
                 }
             },
             silent_mode: false
@@ -219,7 +219,7 @@
             response.status = 400;
             response.msg = 'Invalid xhr_call parameters';
             if (!params.silent_mode) {
-                console.log('Core_util.fetch ' + response.status + ' response from ' + params.xhr_call + ' after ' + response.elapsedTime + 's');
+                console.log('jB.fetch: ' + response.status + ' response from ' + params.xhr_call + ' after ' + response.elapsedTime + 's');
             }
             params.callback(response);
             return;
@@ -256,7 +256,6 @@
                     if (!params.silent_mode) {
                         // session lost, need to login again
                         alert('The session has been expired, please reload the page.');
-                        console.log('Core_util.fetch ' + response.status + ' (Redirect) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                     }
                     params.callback(response);
                     return;
@@ -268,21 +267,21 @@
                 } catch (e) {
                     response.status = 406;
                     if (!params.silent_mode) {
-                        console.log('Core_util.fetch ' + response.status + ' (Not Acceptable) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
+                        console.log('jB.fetch: ' + response.status + ' (Not Acceptable) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                     }
                     params.callback(response);
                     return;
                 }
 
                 if (!params.silent_mode) {
-                    console.log('Core_util.fetch ' + response.status + ' response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
+                    console.log('jB.fetch: ' + response.status + ' response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                 }
 
                 params.callback(response);
             },
             timeout_callback: function () {
                 if (!params.silent_mode) {
-                    console.log('Core_util.fetch ' + response.status + '(Timeout) response from ' + params.call + ' after ' + params.timeout.toFixed(2) + 's');
+                    console.log('jB.fetch: ' + response.status + '(Timeout) response from ' + params.call + ' after ' + params.timeout.toFixed(2) + 's');
                 }
                 xhr.abort();
                 response.status = 504;
@@ -308,7 +307,7 @@
             silent_mode: false,
             done_callback: function () {
                 if (!jB.config.silentMode) {
-                    console.warn("No wait-done_callback defined");
+                    console.warn("jB.wait: No wait-done_callback defined");
                 }
             },
             timeout_callback: function () {
@@ -330,7 +329,7 @@
             timeoutTimer = setInterval(function () {
                 clearInterval(clockInterval);
                 if (!params.silent_mode) {
-                    console.log('Core_util.busy_waiting action (' + params.sync_name + ') timeout');
+                    console.log('jB.wait: action (' + params.sync_name + ') timeout');
                 }
                 params.timeout_callback();
             }, params.timeout);
@@ -344,7 +343,7 @@
                 }
                 if (!params.silent_mode) {
                     var elapsed_time = (Date.now() - start_time) / 1000;
-                    console.log('Core_util.busy_waiting action (' + params.sync_name + ') done after ' + elapsed_time.toFixed(2) + 's');
+                    console.log('jB.wait: action (' + params.sync_name + ') done after ' + elapsed_time.toFixed(2) + 's');
                 }
                 params.done_callback();
                 return;
@@ -365,7 +364,7 @@
         var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
         if (sanitizedUrlMatch.warn) {
             if (!this.config.silentMode) {
-                console.warn("Current Url contains strange symbol");
+                console.warn("jB.segment: Current Url contains strange symbol");
             }
         }
 
@@ -382,7 +381,7 @@
             sCount++;
         }
         if (!this.config.silentMode) {
-            console.warn("Invalid segment index, " + segments.length + "/" + index);
+            console.warn("jB.segment: Invalid segment index, " + segments.length + "/" + index);
         }
         return null;
     };
@@ -400,7 +399,7 @@
         var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
         if (sanitizedUrlMatch.warn) {
             if (!this.config.silentMode) {
-                console.warn("Current Url contains strange symbol");
+                console.warn("jB.baseUrl: Current Url contains strange symbol");
             }
         }
 
@@ -408,7 +407,7 @@
 
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
-            console.warn("Empty Base Url, please check 'config.segmentUrlRoot'");
+            console.warn("jB.baseUrl: Empty Base Url, please check 'config.segmentUrlRoot'");
         }
         if (url !== undefined) {
             homePath += (url.indexOf('/') !== 0 ? '/' : '') + url;
@@ -428,14 +427,14 @@
         var sanitizedUrlMatch = _sanitizeUrl(window.location.href);
         if (sanitizedUrlMatch.warn) {
             if (!this.config.silentMode) {
-                console.warn("Current Url contains strange symbol");
+                console.warn("jB.siteUrl: Current Url contains strange symbol");
             }
         }
 
         var baseRegex = new RegExp("(.*\/+" + configSiteUrl + ")");
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
-            console.warn("Empty Site Url, please check 'config.segmentUrlRoot'");
+            console.warn("jB.siteUrl: Empty Site Url, please check 'config.segmentUrlRoot'");
         }
         if (url !== undefined) {
             homePath += (url.indexOf('/') !== 0 ? '/' : '') + url;
