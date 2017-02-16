@@ -4,9 +4,7 @@ describe("jB.baseUrl", function () {
     var match = dynUrlRegexp.exec(window.location.href);
 
     beforeEach(function () {
-        jB.config = {
-            segmentIgnoreBaseRoot: 'tests',
-        };
+        jB.setConfig('segmentIgnoreBaseRoot', 'tests');
     });
 
 
@@ -19,14 +17,16 @@ describe("jB.baseUrl", function () {
     });
 
     it("should be able to return right base url according to \"ignore\" parameter", function () {
-        jB.config.segmentIgnoreBaseRoot = 'SpecRunner.html';
+        jB.setConfig('segmentIgnoreBaseRoot', 'SpecRunner.html');
+
         expect(jB.baseUrl('fooPage')).toEqual(match[1] + '/tests/fooPage');
 
     });
-    
+
     it("should be able to return right base url according to \"include\" parameter", function () {
-        jB.config.segmentIgnoreBaseRoot = null;
-        jB.config.segmentBaseRoot = 'SpecRunner.html';
+        jB.setConfig('segmentIgnoreBaseRoot', null);
+        jB.setConfig('segmentBaseRoot', 'SpecRunner.html');
+
         expect(jB.baseUrl('fooPage')).toEqual(match[1] + '/tests/SpecRunner.html/fooPage');
 
     });

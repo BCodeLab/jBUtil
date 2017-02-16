@@ -1,13 +1,14 @@
 describe("jB.getConfig", function () {
 
     beforeEach(function () {
-        jB.config = {
+        jB.setConfig({
             segmentBaseRoot: "hereMyBaseRoot",
             segmentIgnoreBaseRoot: "",
             segmentSiteRoot: "fooSegment",
             sessionExpiredUrl: "myFooSegm",
             silentMode: false
-        };
+        });
+
     });
 
     it("should be able to retrieve the right data", function () {
@@ -18,7 +19,7 @@ describe("jB.getConfig", function () {
             expect(jB.getConfig(keyToTest[cfg])).toEqual(jB.config[ keyToTest[cfg]]);
         }
     });
-    
+
     it("should return null if key is not valid", function () {
         // some existing keys
         var keyToTest = ['segmentBaseRoot1', '', 1, null, undefined];

@@ -1,13 +1,13 @@
 describe("jB.setConfig", function () {
 
     beforeEach(function () {
-        jB.config = {
+        jB.setConfig({
             segmentBaseRoot: "hereMyBaseRoot",
             segmentIgnoreBaseRoot: "",
             segmentSiteRoot: "fooSegment",
             sessionExpiredUrl: "myFooSegm",
             silentMode: false
-        };
+        });
     });
 
     it("should be able to set the data (key:value)", function () {

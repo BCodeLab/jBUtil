@@ -3,10 +3,8 @@ describe("jB.segment", function () {
 
 
     beforeEach(function () {
-        jB.config = {
-            segmentSiteRoot: 'tests',
-            segmentIgnoreBaseRoot: 'tests'
-        };
+        jB.setConfig('segmentSiteRoot', 'tests');
+        jB.setConfig('segmentIgnoreBaseRoot', 'tests');
     });
 
     it("should be return null when index is out of the range", function () {
@@ -49,7 +47,6 @@ describe("jB.segment", function () {
         var cSegment, manualUrl = [];
         var maxIndex = 1;
         while ((cSegment = jB.segment(maxIndex++ * -1)) !== null) {
-            console.log(maxIndex);
             // store segments
             manualUrl.unshift(cSegment);
         }

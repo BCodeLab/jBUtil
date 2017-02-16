@@ -4,9 +4,7 @@ describe("jB.siteUrl", function () {
     var match = dynUrlRegexp.exec(window.location.href);
 
     beforeEach(function () {
-        jB.config = {
-            segmentSiteRoot: 'tests',
-        };
+        jB.setConfig('segmentSiteRoot', 'tests');
     });
 
 
@@ -19,7 +17,8 @@ describe("jB.siteUrl", function () {
     });
 
     it("should be able to return right site url according to  parameter", function () {
-        jB.config.segmentSiteRoot = 'tests/SpecRunner.html';
+        jB.setConfig('segmentSiteRoot', 'tests/SpecRunner.html');
+
         expect(jB.siteUrl('fooPage')).toEqual(match[1] + '/SpecRunner.html' + '/fooPage');
 
     });
