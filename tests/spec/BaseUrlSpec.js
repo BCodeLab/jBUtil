@@ -4,6 +4,7 @@ describe("jB.baseUrl", function () {
     var match = dynUrlRegexp.exec(window.location.href);
 
     beforeEach(function () {
+        jB.clearConfig();
         jB.setConfig('segmentIgnoreBaseRoot', 'tests');
     });
 

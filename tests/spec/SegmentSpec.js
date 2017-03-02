@@ -3,6 +3,7 @@ describe("jB.segment", function () {
 
 
     beforeEach(function () {
+        jB.clearConfig();
         jB.setConfig('segmentSiteRoot', 'tests');
         jB.setConfig('segmentIgnoreBaseRoot', 'tests');
     });

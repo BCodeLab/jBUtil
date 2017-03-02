@@ -1,6 +1,7 @@
 describe("jB.setConfig", function () {
 
     beforeEach(function () {
+        jB.clearConfig();
         jB.setConfig({
             segmentBaseRoot: "hereMyBaseRoot",
             segmentIgnoreBaseRoot: "",
