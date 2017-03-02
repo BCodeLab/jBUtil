@@ -24,12 +24,19 @@
     //**************************************************************************
     // jB base config
 
-    _jB.prototype.config = {
+    var jBMainconfig = {
         segmentBaseRoot: "",
         segmentIgnoreBaseRoot: "",
         segmentSiteRoot: "",
         sessionExpiredUrl: "",
         silentMode: false
+    };
+    
+    
+    
+    _jB.prototype.clearConfig = function () {
+         this.config = JSON.parse(JSON.stringify(jBMainconfig));
+     
     };
 
     /**
@@ -404,7 +411,7 @@
         }
 
         var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl : '') + ")" + (configBaseEscapeUrl ? '\/+' + configBaseEscapeUrl : ''));
-
+        console.log(baseRegex);
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("jB.baseUrl: Empty Base Url, please check 'config.segmentUrlRoot'");
@@ -715,10 +722,11 @@
         };
     };
 
+    
     //**************************************************************************
     // ready to expose jB to the world  
     window.jB = new _jB();
-
+    window.jB.clearConfig();
 
 })();
 
