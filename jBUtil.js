@@ -648,7 +648,7 @@
             date = new Date();
         }
         var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
-        var hour = date.getHours(), minutes = date.getMinutes() + 1, seconds = date.getSeconds();
+        var hour = date.getHours(), minutes = date.getMinutes(), seconds = date.getSeconds();
 
         var formatted_date = format.replace('dd', day > 9 ? day : ('0' + day))
                 .replace('mm', month > 9 ? month : ('0' + month))
