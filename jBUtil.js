@@ -647,17 +647,24 @@
         if (date === undefined) {
             date = new Date();
         }
-        var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
-        var hour = date.getHours(), minutes = date.getMinutes(), seconds = date.getSeconds();
+        var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate(), hour = date.getHours(), minutes = date.getMinutes(), seconds = date.getSeconds();
+        var rFormat = format;
+        var replacements = {
+            dd : day > 9 ? day : ('0' + day),
+            mm : month > 9 ? month : ('0' + month),
+            yyyy : year,
+            YYYY : year,
+            HH : hour > 9 ? hour : ('0' + hour),
+            hh : hour > 9 ? hour : ('0' + hour),
+            ii : minutes > 9 ? minutes : ('0' + minutes),
+            ss : seconds > 9 ? seconds : ('0' + seconds)
+        };
+        
+        for (var searchEntry in replacements){
+            rFormat = rFormat.replace(searchEntry, replacements[searchEntry]);
+        }
 
-        var formatted_date = format.replace('dd', day > 9 ? day : ('0' + day))
-                .replace('mm', month > 9 ? month : ('0' + month))
-                .replace('YYYY', year)
-                .replace('HH', hour)
-                .replace('ii', minutes)
-                .replace('ss', seconds);
-
-        return formatted_date;
+        return rFormat;
     };
 
     /**
