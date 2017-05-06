@@ -31,12 +31,12 @@
         sessionExpiredUrl: "",
         silentMode: false
     };
-    
-    
-    
+
+
+
     _jB.prototype.clearConfig = function () {
-         this.config = JSON.parse(JSON.stringify(jBMainconfig));
-     
+        this.config = JSON.parse(JSON.stringify(jBMainconfig));
+
     };
 
     /**
@@ -604,7 +604,7 @@
     /**
      * Parse a string that contains a well formatted date, null if the string wasn't recognized
      * @param {string} string the date to parser
-     * @returns {Date} the parsed date
+     * @returns {Date} the parsed date, false if the string doesn't match with any date format
      */
     _jB.prototype.parseDate = function (string) {
         // date dd/mm/yyyy hh:ii:ss
@@ -627,7 +627,11 @@
         if (date_regex !== null && date_regex.length >= 3) {
             return new Date(date_regex[1], date_regex[2] - 1, date_regex[3]);
         }
-        return new Date(Date.parse(string));
+        var lastTry = new Date(Date.parse(string));
+        if (Object.prototype.toString.call(lastTry) === "[object Date]" && !isNaN(lastTry.getTime())) {
+            return lastTry;
+        }
+        return false;
     };
 
     /**
@@ -650,17 +654,17 @@
         var year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate(), hour = date.getHours(), minutes = date.getMinutes(), seconds = date.getSeconds();
         var rFormat = format;
         var replacements = {
-            dd : day > 9 ? day : ('0' + day),
-            mm : month > 9 ? month : ('0' + month),
-            yyyy : year,
-            YYYY : year,
-            HH : hour > 9 ? hour : ('0' + hour),
-            hh : hour > 9 ? hour : ('0' + hour),
-            ii : minutes > 9 ? minutes : ('0' + minutes),
-            ss : seconds > 9 ? seconds : ('0' + seconds)
+            dd: day > 9 ? day : ('0' + day),
+            mm: month > 9 ? month : ('0' + month),
+            yyyy: year,
+            YYYY: year,
+            HH: hour > 9 ? hour : ('0' + hour),
+            hh: hour > 9 ? hour : ('0' + hour),
+            ii: minutes > 9 ? minutes : ('0' + minutes),
+            ss: seconds > 9 ? seconds : ('0' + seconds)
         };
-        
-        for (var searchEntry in replacements){
+
+        for (var searchEntry in replacements) {
             rFormat = rFormat.replace(searchEntry, replacements[searchEntry]);
         }
 
@@ -729,7 +733,7 @@
         };
     };
 
-    
+
     //**************************************************************************
     // ready to expose jB to the world  
     window.jB = new _jB();
