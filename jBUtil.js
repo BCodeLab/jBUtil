@@ -411,7 +411,6 @@
         }
 
         var baseRegex = new RegExp("(.*" + (configBaseUrl ? configBaseUrl : '') + ")" + (configBaseEscapeUrl ? '\/+' + configBaseEscapeUrl : ''));
-        console.log(baseRegex);
         var homePath = sanitizedUrlMatch.sanitized.match(baseRegex)[1];
         if (homePath === null && !this.config.silentMode) {
             console.warn("jB.baseUrl: Empty Base Url, please check 'config.segmentUrlRoot'");
