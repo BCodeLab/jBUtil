@@ -213,7 +213,7 @@
                     console.warn("jB.fetch: No fetch-callback defined, server returns: " + obj);
                 }
             },
-            silent_mode: false
+            silentMode: jB.config.silentMode
         };
         var response = {
             elapsedTime: 0,
@@ -225,7 +225,7 @@
         if (params.call === undefined || params.call === '') {
             response.status = 400;
             response.msg = 'Invalid xhr_call parameters';
-            if (!params.silent_mode) {
+            if (!params.silentMode) {
                 console.log('jB.fetch: ' + response.status + ' response from ' + params.xhr_call + ' after ' + response.elapsedTime + 's');
             }
             params.callback(response);
@@ -252,7 +252,7 @@
             },
             sync_clock: 50,
             timeout: params.timeout,
-            silent_mode: true,
+            silentMode: true,
             done_callback: function () {
                 response.status = xhr.status;
                 response.elapsedTime = (Date.now() - send_time) / 1000;
@@ -260,7 +260,7 @@
                 if (xhr.responseURL === jB.siteUrl('admin/users/login')) {
                     response.status = 406;
                     response.msg = "The session has been expired, please reload the page.";
-                    if (!params.silent_mode) {
+                    if (!params.silentMode) {
                         // session lost, need to login again
                         alert('The session has been expired, please reload the page.');
                     }
@@ -273,21 +273,21 @@
                     response.response = JSON.parse(xhr.responseText);
                 } catch (e) {
                     response.status = 406;
-                    if (!params.silent_mode) {
+                    if (!params.silentMode) {
                         console.log('jB.fetch: ' + response.status + ' (Not Acceptable) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                     }
                     params.callback(response);
                     return;
                 }
 
-                if (!params.silent_mode) {
+                if (!params.silentMode) {
                     console.log('jB.fetch: ' + response.status + ' response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
                 }
 
                 params.callback(response);
             },
             timeout_callback: function () {
-                if (!params.silent_mode) {
+                if (!params.silentMode) {
                     console.log('jB.fetch: ' + response.status + '(Timeout) response from ' + params.call + ' after ' + params.timeout.toFixed(2) + 's');
                 }
                 xhr.abort();
@@ -311,7 +311,7 @@
                 return false;
             },
             timeout: false,
-            silent_mode: false,
+            silentMode: false,
             done_callback: function () {
                 if (!jB.config.silentMode) {
                     console.warn("jB.wait: No wait-done_callback defined");
@@ -335,7 +335,7 @@
         if (params.timeout !== false && params.timeout > 0) {
             timeoutTimer = setInterval(function () {
                 clearInterval(clockInterval);
-                if (!params.silent_mode) {
+                if (!params.silentMode) {
                     console.log('jB.wait: action (' + params.sync_name + ') timeout');
                 }
                 params.timeout_callback();
@@ -348,7 +348,7 @@
                 if (params.timeout === false || params.timeout <= 0) {
                     clearTimeout(timeoutTimer);
                 }
-                if (!params.silent_mode) {
+                if (!params.silentMode) {
                     var elapsed_time = (Date.now() - start_time) / 1000;
                     console.log('jB.wait: action (' + params.sync_name + ') done after ' + elapsed_time.toFixed(2) + 's');
                 }
