@@ -606,6 +606,11 @@
      * @returns {Date} the parsed date, false if the string doesn't match with any date format
      */
     _jB.prototype.parseDate = function (string) {
+        // date yyyy/mm/dd hh:ii:ss
+        var date_regex = string.match(/([0-9]{4})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{1,2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/);
+        if (date_regex !== null && date_regex.length >= 7) {
+            return new Date(date_regex[1], parseInt(date_regex[2]) - 1, date_regex[3], date_regex[4], date_regex[5], date_regex[6]);
+        }
         // date dd/mm/yyyy hh:ii:ss
         var date_regex = string.match(/([0-9]{1,2})[\-\/]{1}([0-9]{1,2})[\-\/]{1}([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/);
         if (date_regex !== null && date_regex.length >= 7) {
