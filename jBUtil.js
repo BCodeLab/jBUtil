@@ -596,8 +596,7 @@
         var i = Math.abs(parseInt(number)) + "";
         var decimal = (number - i).toFixed(2);
         var firstOff = i.length % 3;
-        return  sign + (firstOff ? i.substr(0, firstOff) : "") + (!firstOff || firstOff >= i.length ? '' : '\'') + i.substring(firstOff).replace(/(\d{3})(?=\d{3})/g, "$1\'") + '.' + decimal.substring(decimal.length - 2, decimal.length);
-
+        return  sign + (firstOff ? i.substr(0, firstOff) : "") + (!firstOff || firstOff >= i.length ? '' : '\'') + i.substring(firstOff).replace(/(\d{3})(?=\d{3})/g, "$1\'") + (p <= 0 ? '' : '.' + decimal.substring(decimal.length - p, decimal.length));
     };
 
     /**
