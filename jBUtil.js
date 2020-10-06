@@ -296,6 +296,100 @@
             }
         });
     };
+ 
+   /**
+     * Improved xhr call function, reduce some annoying configs and code required by
+     * the original version (based on Promise)
+     * 
+     * @param {object} para
+     * @returns Promise the promise to fetch the result
+   */
+  _jB.prototype.promiseFetch = function (para) {
+        let defaultParams = {
+            timeout: false,
+            data: {},
+            silentMode: jB.config.silentMode
+        };
+        let response = {
+            elapsedTime: 0,
+            response: null,
+            status: -1,
+            msg: ""
+        };
+        let params = jB.extend({}, defaultParams, para);
+        if (params.call === undefined || params.call === '') {   
+            console.error('jB.fetch: "call" parameter is not defined!');
+            return;
+        }
+
+
+        return new Promise((ps, pf) => {
+
+            let xhr = new XMLHttpRequest();
+            if (params.timeout > 0) {
+                xhr.timeout = params.timeout * 1000;
+            }
+            if (jB.count(params.data) > 0) {
+                // set post request with data
+                xhr.open('POST', jB.siteUrl(params.call), true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            } else {
+                xhr.open('GET', jB.siteUrl(params.call), true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            }
+
+
+            xhr.onload = function () {
+                response.status = this.status;
+                response.elapsedTime = (Date.now() - sendTime) / 1000;
+
+                if (response.status == 200) {
+                    try {
+                        response.response = JSON.parse(xhr.responseText);
+                    } catch (e) {
+                        response.status = 406;
+                        if (!params.silentMode) {
+                            console.log('jB.fetch: ' + response.status + ' (Not Acceptable) response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
+                        }
+                        ps(response);
+                    }
+                }
+                if (!params.silentMode) {
+                    console.log('jB.fetch: ' + response.status + ' response from ' + params.call + ' after ' + response.elapsedTime.toFixed(2) + 's');
+                }
+
+                ps(response);
+            };
+            xhr.onerror = function () {
+                response.status = this.status;
+                response.elapsedTime = (Date.now() - sendTime) / 1000;
+                response.status = this.statusText;
+                pf(response);
+            };
+
+            xhr.ontimeout = function (e) {
+                response.status = 504;
+                // XMLHttpRequest timed out. Do something here.
+                if (!params.silentMode) {
+                    console.log('jB.fetch: ' + response.status + '(Timeout) response from ' + params.call + ' after ' + params.timeout.toFixed(2) + 's');
+                }
+                this.abort();
+
+                pf(response);
+            };
+
+            if (jB.count(params.data) > 0) {
+                // set post request with data
+                xhr.send(jB.param(params.data));
+            } else {
+                xhr.send();
+            }
+
+            let sendTime = Date.now();
+        });
+
+    };
 
     /**
      * Busy waiting implementation 
