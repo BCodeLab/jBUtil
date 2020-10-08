@@ -784,11 +784,7 @@
         //insert key=> value elements
         for (var key in params) {
             if (params.hasOwnProperty(key)) {
-                var hiddenField = document.createElement("input");
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", key);
-                hiddenField.setAttribute("value", params[key]);
-                form.appendChild(hiddenField);
+                _recoursiveCallInput(key, params[key], form);
             }
         }
         //submit form
@@ -802,6 +798,19 @@
     //**************************************************************************
     // private methods - centralized functions
 
+    var _recoursiveCallInput = function (key, value, form) {
+        if (value instanceof Array || typeof value === 'object') {
+            for(let paramSubkey in value){
+                _recoursiveCallInput(key + "[" + paramSubkey + "]", value[paramSubkey], form);
+            }
+        } else {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", value);
+            form.appendChild(hiddenField);
+        }
+    }
 
     /**
      * Create a string with escaped special char, ready to be used as regex component
