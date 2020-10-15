@@ -831,7 +831,7 @@
      *  - warning - true if the sanitize function found some "undesired" stuff
      */
     var _sanitizeUrl = function (url) {
-        var sanitizedMatch = url.match(/^(.*[a-zA-Z0-9])([\/\#\?]*)$/);
+        var sanitizedMatch = url.match(/^(.*?[a-zA-Z0-9_]+)([#?]?[^\/]*)$/);
 
         return {
             sanitized: sanitizedMatch[1],
@@ -846,5 +846,4 @@
     window.jB.clearConfig();
 
 })();
-
 
