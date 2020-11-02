@@ -831,11 +831,16 @@
      *  - warning - true if the sanitize function found some "undesired" stuff
      */
     var _sanitizeUrl = function (url) {
-        var sanitizedMatch = url.match(/^(.*?[a-zA-Z0-9_]+)([#?]?[^\/]*)$/);
+        var sanitizedMatch = url.match(/^(.*?[a-zA-Z0-9_\/])(([$&+,:;=?@<>#%][^\/]*)?)$/);
+        if(sanitizedMatch === null){
+          if (!this.config.silentMode) {
+                console.warn("jB: Current Url seems to be un-parsable");
+            }
+        }
 
         return {
-            sanitized: sanitizedMatch[1],
-            warn: sanitizedMatch[2].length
+            sanitized: sanitizedMatch !== null ? sanitizedMatch[1] : url,
+            warn: sanitizedMatch !== null && sanitizedMatch[2].length > 0
         };
     };
 
