@@ -296,15 +296,15 @@
             }
         });
     };
- 
-   /**
+
+    /**
      * Improved xhr call function, reduce some annoying configs and code required by
      * the original version (based on Promise)
      * 
      * @param {object} para
      * @returns Promise the promise to fetch the result
-   */
-  _jB.prototype.promiseFetch = function (para) {
+     */
+    _jB.prototype.promiseFetch = function (para) {
         let defaultParams = {
             timeout: false,
             data: {},
@@ -317,7 +317,7 @@
             msg: ""
         };
         let params = jB.extend({}, defaultParams, para);
-        if (params.call === undefined || params.call === '') {   
+        if (params.call === undefined || params.call === '') {
             console.error('jB.fetch: "call" parameter is not defined!');
             return;
         }
@@ -798,9 +798,18 @@
     //**************************************************************************
     // private methods - centralized functions
 
+    /**
+     * Creates an input recoursivelly, if the value is atom just add one input, 
+     * if iterable creates recoursivelly one input for each child
+     * 
+     * @param {string} key name of the key
+     * @param {mixed} value the value(s)
+     * @param {type} form the form node to insert the inputs
+     * @returns {undefined}
+     */
     var _recoursiveCallInput = function (key, value, form) {
         if (value instanceof Array || typeof value === 'object') {
-            for(let paramSubkey in value){
+            for (let paramSubkey in value) {
                 _recoursiveCallInput(key + "[" + paramSubkey + "]", value[paramSubkey], form);
             }
         } else {
@@ -825,15 +834,15 @@
     /**
      * Sanitize url, return url whithout any "undesired" stuff (particular chars ..)
      * 
-     * @param {strinf} url the url to sanitize
+     * @param {string} url the url to sanitize
      * @returns {object} the response canatinig the following keys
      *  - sanitized - what you're looking for, the sanitized url
      *  - warning - true if the sanitize function found some "undesired" stuff
      */
     var _sanitizeUrl = function (url) {
         var sanitizedMatch = url.match(/^(.*?[a-zA-Z0-9_\/])(([$&+,:;=?@<>#%][^\/]*)?)$/);
-        if(sanitizedMatch === null){
-          if (!this.config.silentMode) {
+        if (sanitizedMatch === null) {
+            if (!this.config.silentMode) {
                 console.warn("jB: Current Url seems to be un-parsable");
             }
         }
